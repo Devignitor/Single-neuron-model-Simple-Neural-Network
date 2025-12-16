@@ -1,46 +1,57 @@
-﻿Very Basic Tiny  Machine Learning setup in C# Console App
-Model Type: Linear Regression
-Learning Algorithm: Stochastic Gradient Descent (SGD)
+# Simple Neural Network Implementation in C\#
 
-Model is a single neron based linear regression model with 3 inputs and 1 output.
-it works without activation function.
-	y^​=W1​x1​+W2​x2​+B
-It is the most fundamental simple neural network.
+This document provides a detailed breakdown of the provided C\# code, explaining its structure, functionality, and relationship to fundamental neural network concepts.
 
+## Why This Code?
 
-The purpose of this code is to demonstrate a simple implementation of linear regression using gradient descent in C#.
-What the code does:
-	Trains a linear model to fit a set of input-output pairs (training data).
-	Learns weights and a bias so that the model can predict an output value given a new set of three input values.
-	Uses gradient descent to iteratively adjust the weights and bias to minimize the prediction error (mean squared error).
-	After training, the model predicts outputs for new, unseen input values and prints the results.
+This code demonstrates a minimal **Feedforward Neural Network** with one hidden layer. Its primary goal is educational: to show how a neural network can be implemented from scratch in C\# and trained using a core machine learning principle: **Gradient Descent** (specifically, learning the function of addition).
 
-This code is a basic example of machine learning, specifically linear regression, showing how a computer can "learn" the relationship between inputs and outputs from data and then make predictions for new data.
+## How the Code Works: Step-by-Step
 
+### 1. Data Setup
 
-Code Explaination
-1. Data Setup
-	inputs: A 2D array of 9 training samples, each with 3 features (e.g., {1.0, 2.0, 1.0}).
-	outputs: A 1D array of 9 target values, each corresponding to a row in inputs.
-2. Model Initialization
-	weights: An array of 3 weights (one per input feature), initialized randomly.
-	bias: A single bias value, also initialized randomly.
-3. Training Loop
-	Epochs: The model trains for 1000 epochs (iterations).
-	For each epoch:
-	totalLoss: Accumulates the squared error for all samples in the epoch.
-	For each training sample:
-	Predict: Calculates the model’s output as a weighted sum of inputs plus bias.
-	Error: The difference between the predicted value and the actual output.
-	Weights Update: Each weight is adjusted by subtracting a fraction of the error, scaled by the input and learning rate.
-	Bias Update: The bias is adjusted by subtracting a fraction of the error, scaled by the learning rate.
-	Loss Calculation: The squared error is added to totalLoss.
-	Every 100 epochs, the current loss is printed.
-4. Prediction
-	After training, the model predicts outputs for two test inputs:
-	{5, 5, 5}
-	{20, 5, 6}
-	The predictions are printed to the console.
-5. Helper Functions
-	Predict: Computes the weighted sum of inputs plus bias.
-	Loss: Computes the squared error between predicted and actual values.
+| Variable | Structure | Example | Description |
+| :--- | :--- | :--- | :--- |
+| `Inputs` | Four samples, 2 features each. | $\{{1, 2\}, \{2, 3\}, \ldots\}$ | The values fed into the input layer. |
+| `Outputs` | Four corresponding sums. | $\{3, 5, \ldots\}$ | The target values the network must learn to predict. |
+
+### 2. Model Architecture 
+
+* **Input Layer:** **2 neurons** (for the two input features, $x_1$ and $x_2$).
+* **Hidden Layer:** **3 neurons**. This layer introduces non-linearity via the $\text{ReLU}$ function.
+* **Output Layer:** **1 neuron** (for the final predicted sum, $\hat{y}$).
+
+### 3. Initialization and Training
+
+* **Parameters:** All initial weights ($W_1$ for Input→Hidden, $W_2$ for Hidden→Output) and biases ($B_1$, $B_2$) are set to **random values**.
+* **Epochs:** The network is trained for **2000 iterations**.
+* **Learning Algorithm:** **Stochastic Gradient Descent (SGD)** is used. The parameters are updated after processing *each* individual training sample.
+
+### 4. The Training Loop (Per Sample)
+
+| Step | Functionality | Calculation/Concept |
+| :--- | :--- | :--- |
+| **Forward Pass** | Calculates the prediction ($\hat{y}$) using current parameters. | $Z_1 = W_1 \cdot X + B_1 \rightarrow H = \text{ReLU}(Z_1) \rightarrow \hat{y} = W_2 \cdot H + B_2$ |
+| **Error** | Determines the distance from the truth. | $Error = \hat{y} - y$ |
+| **Weights Update** | Adjusts the parameters to reduce future error. | **$W_{new} = W_{old} - \eta \cdot \text{Gradient}$** |
+| **Loss** | Accumulates the performance measure. | $\text{Squared Error} = (\hat{y} - y)^2$ |
+
+> **Critical Note on Training:**
+> The code only updates the **output layer weights ($W_2$) and bias ($B_2$)**. The input→hidden parameters ($W_1, B_1$) are **not** updated. This simplifies the implementation by avoiding the **backpropagation** step required to calculate gradients for the first layer.
+
+## Functions Introduction
+
+| Function | Formula / Logic | Purpose |
+| :--- | :--- | :--- |
+| `ReLU(x)` | $\max(0, x)$ | The **Activation Function** for the hidden layer. It introduces non-linearity, allowing the network to learn complex patterns. |
+| `Predict(input)` | $W \cdot X + B$ (Linear) | Executes the **Forward Pass** through the two-layer network to generate an output. |
+| `Loss(predicted, actual)` | $(\text{predicted} - \text{actual})^2$ | Implements the **Squared Error (L2 Loss)**, the cost function that the training process aims to minimize. |
+
+## Neural Network & Training Summary
+
+* **Network Type:** **Feedforward Neural Network** (specifically, a Multilayer Perceptron with a single hidden layer).
+* **Activation:** The hidden layer uses **ReLU** (Rectified Linear Unit), and the output layer uses a **Linear** activation.
+* **Learning Algorithm:** **Stochastic Gradient Descent (SGD)**.
+* **Training Goal:** Minimize the **Mean Squared Error (MSE)** by iteratively adjusting weights and bias.
+
+This model is a successful demonstration of the core forward-pass calculation and the gradient descent update mechanism, which are universal across nearly all modern neural network frameworks.
